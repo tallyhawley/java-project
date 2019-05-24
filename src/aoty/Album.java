@@ -1,16 +1,25 @@
 package aoty;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
+import javax.imageio.ImageIO;
 
 public class Album {
 	
 	//album info
 	private String name;
 	private Artist artist;
-	private int releaseDate; // YYYYMMDD format
+	private Date releaseDate;
 	private int type; // 0 - EP, 1 - LP, 2 - single, 3 - mixtape
 	private String genre;
 	private String label;
+	private BufferedImage cover;
 	
 	//reviews, ratings, and scores
 	private ArrayList<Rating> criticRatings;
@@ -20,10 +29,15 @@ public class Album {
 	private Score criticScore;
 	private Score userScore;
 	
-	public Album(String n, Artist a, int rd, int t, String g, String l) {
+	public Album(String n, Artist a, String rd, int t, String g, String l) {
 		name = n;
 		artist = a;
-		releaseDate = rd;
+		//album release date in YYYY-MM-DD format, converted from String input to Date
+		try {
+			releaseDate = new SimpleDateFormat("yyyy-MM-dd").parse(rd);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		type = t;
 		genre = g;
 		label = l;
@@ -71,11 +85,11 @@ public class Album {
 		this.artist = artist;
 	}
 
-	public int getReleaseDate() {
+	public Date getReleaseDate() {
 		return releaseDate;
 	}
 
-	public void setReleaseDate(int releaseDate) {
+	public void setReleaseDate(Date releaseDate) {
 		this.releaseDate = releaseDate;
 	}
 
@@ -101,6 +115,18 @@ public class Album {
 
 	public void setLabel(String label) {
 		this.label = label;
+	}
+
+	public BufferedImage getCover() {
+		return cover;
+	}
+
+	public void setCover(File img) {
+		try {                
+	          cover = ImageIO.read(img);
+	       } catch (IOException e) {
+	            e.printStackTrace();
+	       }
 	}
 
 }
