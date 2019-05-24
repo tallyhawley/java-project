@@ -32,13 +32,13 @@ public class Album {
 		criticReviews = new ArrayList<Review>();
 		userRatings = new ArrayList<Rating>();
 		userReviews = new ArrayList<Review>();
-		criticScore = new Score();
-		userScore = new Score();
+		criticScore = new Score(criticRatings);
+		userScore = new Score(userRatings);
 	}
 	
 	public void addCriticRating(Rating rating) {
 		criticRatings.add(rating);
-		criticScore.update();
+		criticScore.update(criticRatings);
 	}
 	
 	public void addCriticReview(Review review) {
@@ -47,7 +47,7 @@ public class Album {
 	
 	public void addUserRating(Rating rating) {
 		userRatings.add(rating);
-		userScore.update();
+		userScore.update(userRatings);
 	}
 	
 	public void addUserReview(Review review) {
