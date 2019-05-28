@@ -48,6 +48,8 @@ public class Album {
 		userReviews = new ArrayList<Review>();
 		criticScore = new Score(criticRatings);
 		userScore = new Score(userRatings);
+		
+		
 	}
 	
 	public void addCriticRating(Rating rating) {
@@ -128,5 +130,63 @@ public class Album {
 	            e.printStackTrace();
 	       }
 	}
+	
+	public void setCover(String file) {
+		try {                
+	          cover = ImageIO.read(new File(file));
+	       } catch (IOException e) {
+	            e.printStackTrace();
+	       }
+	}
+
+	public Score getCriticScore() {
+		return criticScore;
+	}
+
+	public void setCriticScore(Score criticScore) {
+		this.criticScore = criticScore;
+	}
+
+	public Score getUserScore() {
+		return userScore;
+	}
+
+	public void setUserScore(Score userScore) {
+		this.userScore = userScore;
+	}
+
+	public ArrayList<Rating> getCriticRatings() {
+		return criticRatings;
+	}
+
+	public void setCriticRatings(ArrayList<Rating> criticRatings) {
+		this.criticRatings = criticRatings;
+	}
+
+	public ArrayList<Review> getCriticReviews() {
+		return criticReviews;
+	}
+
+	public void setCriticReviews(ArrayList<Review> criticReviews) {
+		this.criticReviews = criticReviews;
+	}
+
+	public ArrayList<Rating> getUserRatings() {
+		return userRatings;
+	}
+
+	public void setUserRatings(ArrayList<Rating> userRatings) {
+		this.userRatings = userRatings;
+	}
+
+	public ArrayList<Review> getUserReviews() {
+		return userReviews;
+	}
+
+	public void setUserReviews(ArrayList<Review> userReviews) {
+		this.userReviews = userReviews;
+	}
+	
+	
 
 }

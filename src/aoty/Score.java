@@ -25,5 +25,13 @@ public class Score {
 		}
 		score = score/ratings.size();
 	}
+	
+	public int getScore() {
+		return score;
+	}
+	
+	public String toString() {
+		return "" + score;
+	}
 
 }
