@@ -8,9 +8,9 @@ import javax.swing.JFrame;
 
 public class MusicReviewApp extends JFrame implements ActionListener {
 
-	//setup
-	
-	
+	public MusicReviewApp() {
+		
+	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
