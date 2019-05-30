@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -14,16 +16,40 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class AlbumPanel extends JPanel {
+public class AlbumPanel extends JPanel implements MouseListener {
 	
 	private static final long serialVersionUID = 1L;
 	
 	private Album album;
 	private User currentUser;
+	private JButton rateButton;
+	private JTextField rate;
+	private JTextArea review;
+	private JButton revButton;
+	private boolean rated;
+	private boolean reviewed;
+	private int length;
+	private Rating myRating;
+	private Review myReview;
 	
 	public AlbumPanel(Album a, User u) {
 		album = a;
 		currentUser = u;
+		rated = false;
+		reviewed = false;
+		for(Rating r : album.getUserRatings()) {
+			if(r.getSource().equals(currentUser)) {
+				rated = true;
+				myRating = r;
+			}
+		}
+		for(Review r : album.getUserReviews()) {
+			if(r.getSource().equals(currentUser)) {
+				reviewed = true;
+				myReview = r;
+			}
+		}
+		length = 1000;
 	}
 	
 	public void paintComponent(Graphics window) {
@@ -93,24 +119,34 @@ public class AlbumPanel extends JPanel {
 		window.drawString(currentUser.getName(), 65, 485);
 		
 		//add rating field
-		JTextField rate = new JTextField(5);
-		rate.setBounds(62, 492,40,15);
-		this.add(rate);
+		if(!rated) {
+			rate = new JTextField(5);
+			rate.setBounds(62, 492,40,15);
+			this.add(rate);
 		
-		//add rate button
-		JButton rateButton = new JButton("RATE");
-		rateButton.setBounds(107,492,50,15);
-		this.add(rateButton);
+			//add rate button
+			rateButton = new JButton("RATE");
+			rateButton.setBounds(107,492,50,15);
+			this.add(rateButton);
+			rateButton.addMouseListener(this);
+		}else {
+			window.setColor(Color.DARK_GRAY);
+			window.drawString(""+ myRating.getRating(), 65, 503);
+		}
 		
 		//add review
-		JTextArea review = new JTextArea();
-		review.setEditable(true);
-		review.setBounds(64,512,476,73);
-		this.add(review);
+		if(!reviewed) {
+			JTextArea review = new JTextArea();
+			review.setEditable(true);
+			review.setBounds(64,512,476,73);
+			review.setLineWrap(true);
+			review.setWrapStyleWord(true);
+			this.add(review);
+		}
 	}
 	
 	public void display(JFrame frame) {
-		this.setPreferredSize(new Dimension(600,1000));
+		this.setPreferredSize(new Dimension(600,length));
 		
 		//make the panel scrollable
 		JScrollPane scrollPane = new JScrollPane(this);
@@ -145,9 +181,44 @@ public class AlbumPanel extends JPanel {
 	    p4k.review(weAreSuperhuman, "a valiant effort");
 	    
 	    User me = new User("isaac's account", "24kofficial", "aasdffaasdff", "trsileneh@gmail.com");
-	    
+	    	    
 	    AlbumPanel panel = new AlbumPanel(weAreSuperhuman, me);
 	    panel.display(frame);
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if(e.getSource() == rateButton) {
+			currentUser.rate(album, Integer.parseInt(rate.getText()));
+			myRating = currentUser.getRatings().get(currentUser.getRatings().size()-1);
+			rated = true;
+			repaint();
+		}
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
