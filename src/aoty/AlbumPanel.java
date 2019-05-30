@@ -137,7 +137,7 @@ public class AlbumPanel extends JPanel implements MouseListener {
 		//add review
 		if(!reviewed) {
 			JTextArea review = new JTextArea();
-			review.setEditable(true);
+			review.setEditable(true); 
 			review.setBounds(64,512,476,73);
 			review.setLineWrap(true);
 			review.setWrapStyleWord(true);
