@@ -3,6 +3,7 @@ package aoty;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class Album {
 		criticScore = new Score(criticRatings);
 		userScore = new Score(userRatings);
 		
-		setCover("src/covers/" + artist.getName() + " - " + name + ".jpg");
+		setCover("src/covers/" + artist.getName() + " - " + name.replace("/", ":") + ".jpg");
 	}
 	
 	public void addCriticRating(Rating rating) {
@@ -187,6 +188,9 @@ public class Album {
 		this.userReviews = userReviews;
 	}
 	
-	
+	public String toString() {
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		return name + " by " + artist.getName() + ". " + df.format(getReleaseDate()) + " / " + genre + " / " + label;
+	}
 
 }

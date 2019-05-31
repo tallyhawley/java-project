@@ -32,4 +32,13 @@ public class Artist {
 		return name;
 	}
 	
+	public Album getAlbum(String name) {
+		for(Album a : albums) {
+			if(a.getName().equals(name)) {
+				return a;
+			}
+		}
+		return null;
+	}
+	
 }

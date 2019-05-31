@@ -187,7 +187,18 @@ public class AlbumPanel extends JPanel {
 		
 		//display critic reviews
 		window.setColor(new Color(230,230,230));
-		window.fillRect(50, 645, 500, album.getCriticRatings().size()*100);
+		window.fillRect(50, 645, 500, 40 + album.getCriticReviews().size()*100);
+		window.setColor(Color.black);
+		window.setFont(new Font("default", Font.BOLD, 13));
+		window.drawString("CRITIC REVIEWS", 65, 670);
+		
+		if(album.getCriticReviews().size() == 0) {
+			window.setColor(new Color(230,230,230));
+			window.fillRect(50, 685, 500, 40);
+			window.setColor(Color.black);
+			window.setFont(new Font("default", Font.PLAIN, 13));
+			window.drawString("No Critic Reviews!", 250, 700);
+		}
 		
 	}
 	

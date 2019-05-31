@@ -14,10 +14,21 @@ import javax.swing.JFrame;
 public class MusicReviewApp extends JFrame  {
 
 	private ArrayList<Artist> artists;
+	private ArrayList<Critic> critics;
+	private ArrayList<User> users;
 	
 	public MusicReviewApp() {
+		setTitle("Album Review App");
 		artists = new ArrayList<Artist>();
+		critics = new ArrayList<Critic>();
+		users = new ArrayList<User>();
 		loadData();
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		User me = new User("isaac", "is", "13","asdfsd");
+		AlbumPanel panel = new AlbumPanel(getArtist("Radiohead").getAlbum("In Rainbows"), me);
+		panel.display(this);
 	}
 	
 	private void loadData() {
@@ -44,15 +55,12 @@ public class MusicReviewApp extends JFrame  {
 			BufferedReader readAlbums = new BufferedReader(new FileReader("src/savedata/albums"));
 			String line = readAlbums.readLine();
 			while(line != null) {
-				Artist current = null;
-				for(Artist a : artists) {
-					if(a.getName().equals(line)) current = a;
-				}
-				while(line != "") {
-					String[] info = line.split("/");
-					current.add(new Album(info[0],current,info[1],Integer.parseInt(info[2]), info[3],info[4]));
-					line = readAlbums.readLine();
-				}
+				String[] info = line.split("/(?!\\s)");
+				//find artist
+				Artist artist = getArtist(info[1]);
+				//create album with parsed info
+				Album al = new Album(info[0],artist,info[2],Integer.parseInt(info[3]),info[4],info[5]);
+				artist.add(al);
 				line = readAlbums.readLine();
 			}
 			readAlbums.close();
@@ -65,6 +73,53 @@ public class MusicReviewApp extends JFrame  {
 			e.printStackTrace();
 		}
 		
+		//load critics
+		try {
+			BufferedReader readCritics = new BufferedReader(new FileReader("src/savedata/critics"));
+			String line = readCritics.readLine();
+			while(line != null) {
+				String[] info = line.split(" - ");
+				critics.add(new Critic(info[0], info[1]));
+				line = readCritics.readLine();
+			}
+			readCritics.close();
+		}
+		catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//load critic reviews
+		
+		//load users
+		
+		//load user reviews
+		
+	}
+	
+	private Artist getArtist(String name) {
+		for(Artist a : artists) {
+			if(a.getName().equals(name)){
+				return a;
+			}
+		}
+		return null;
+	}
+	
+	private Critic getCritic(String name) {
+		for(Critic c : critics) {
+			if(c.getName().equals(name)) {
+				return c;
+			}
+		}
+		return null;
+	}
+	
+	public static void main(String[] args) {
+		MusicReviewApp run = new MusicReviewApp();
 	}
 	
 }
