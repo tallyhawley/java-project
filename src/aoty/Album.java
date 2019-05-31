@@ -49,7 +49,7 @@ public class Album {
 		criticScore = new Score(criticRatings);
 		userScore = new Score(userRatings);
 		
-		
+		setCover("src/covers/" + artist.getName() + " - " + name + ".jpg");
 	}
 	
 	public void addCriticRating(Rating rating) {

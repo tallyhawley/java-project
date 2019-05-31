@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -16,16 +16,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class AlbumPanel extends JPanel implements MouseListener {
+public class AlbumPanel extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	
 	private Album album;
 	private User currentUser;
-	private JButton rateButton;
-	private JTextField rate;
-	private JTextArea review;
-	private JButton revButton;
+	private JButton rateButton = new JButton("RATE");
+	private JTextField rate = new JTextField(5);
+	private JTextArea review = new JTextArea();
+	private JButton revButton = new JButton("Post Review");
 	private boolean rated;
 	private boolean reviewed;
 	private int length;
@@ -50,6 +50,52 @@ public class AlbumPanel extends JPanel implements MouseListener {
 			}
 		}
 		length = 1000;
+		
+		this.setLayout(null);
+		
+		//ADD ALL COMPONENTS
+		
+		//rating box
+		rate.setBounds(62, 492,40,15);
+		this.add(rate);
+	
+		//add rate button
+		rateButton.setBounds(107,492,50,15);
+		rateButton.addActionListener(new ActionListener() { 
+			public void actionPerformed(ActionEvent e) {
+				if(!rate.getText().equals("") && !rated) {
+					currentUser.rate(album, Integer.parseInt(rate.getText()));
+					myRating = currentUser.getRatings().get(currentUser.getRatings().size()-1);
+					rated = true;
+					repaint();
+				}
+			}	
+		});
+		this.add(rateButton);
+		
+		//review box
+		review.setEditable(true); 
+		review.setBounds(64,512,476,73);
+		review.setLineWrap(true);
+		review.setWrapStyleWord(true);
+		this.add(review);
+		
+		//review button
+		revButton.setBounds(440, 595, 100,15);
+		revButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(!review.getText().equals("") && !reviewed) {
+					currentUser.review(album, review.getText());
+					myReview = currentUser.getReviews().get(currentUser.getReviews().size()-1);
+					reviewed = true;
+					repaint();
+				}
+			}
+			
+		});
+		this.add(revButton);
 	}
 	
 	public void paintComponent(Graphics window) {
@@ -111,7 +157,7 @@ public class AlbumPanel extends JPanel implements MouseListener {
 		
 		//enter your review
 		window.setColor(new Color(230,230,230));
-		window.fillRect(50, 435, 500, 165);
+		window.fillRect(50, 435, 500, 185);
 		window.setColor(Color.black);
 		window.setFont(new Font("default", Font.BOLD, 13));
 		window.drawString("YOUR REVIEW", 65, 460);
@@ -120,29 +166,29 @@ public class AlbumPanel extends JPanel implements MouseListener {
 		
 		//add rating field
 		if(!rated) {
-			rate = new JTextField(5);
-			rate.setBounds(62, 492,40,15);
-			this.add(rate);
-		
-			//add rate button
-			rateButton = new JButton("RATE");
-			rateButton.setBounds(107,492,50,15);
-			this.add(rateButton);
-			rateButton.addMouseListener(this);
+			rate.setVisible(true);
+			rateButton.setVisible(true);
 		}else {
+			rate.setVisible(false);
+			rate.setEditable(false);
+			rateButton.setVisible(false);
 			window.setColor(Color.DARK_GRAY);
 			window.drawString(""+ myRating.getRating(), 65, 503);
 		}
 		
 		//add review
 		if(!reviewed) {
-			JTextArea review = new JTextArea();
-			review.setEditable(true); 
-			review.setBounds(64,512,476,73);
-			review.setLineWrap(true);
-			review.setWrapStyleWord(true);
-			this.add(review);
+			review.setVisible(true);
 		}
+		else {
+			review.setBackground(new Color(230,230,230));
+			review.setEditable(false);
+		}
+		
+		//display critic reviews
+		window.setColor(new Color(230,230,230));
+		window.fillRect(50, 645, 500, album.getCriticRatings().size()*100);
+		
 	}
 	
 	public void display(JFrame frame) {
@@ -152,12 +198,12 @@ public class AlbumPanel extends JPanel implements MouseListener {
 		JScrollPane scrollPane = new JScrollPane(this);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setBounds(0, 0, 600, 400);
+        scrollPane.setBounds(0, 0, 600, 500);
         
         //add scrollpane to contentpane
         JPanel contentPane = new JPanel(null);
 	    contentPane.add(scrollPane);
-	    contentPane.setPreferredSize(new Dimension(600,400));
+	    contentPane.setPreferredSize(new Dimension(600,500));
 	    
 	    frame.setContentPane(contentPane);
 	    
@@ -169,56 +215,20 @@ public class AlbumPanel extends JPanel implements MouseListener {
 		JFrame frame = new JFrame("TEST");
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    
-	    Artist nct127 = new Artist("NCT 127");
-	    Album weAreSuperhuman = new Album("We Are Superhuman", nct127, "2019-05-24", 0, "K-Pop", "SM Entertainment");
-	    weAreSuperhuman.setCover("src/covers/We Are Superhuman.png");
+	    Artist testArtist = new Artist("Sufjan Stevens");
+	    Album testAlbum = new Album("Greetings From Michigan: The Great Lakes State", testArtist, "2003-07-01",1,"Indie Folk","Asthmatic Kitty");
 	    User user = new User("test user", "345678", "345678", "345678");
-	    user.review(weAreSuperhuman, "i liked it");
-	    user.rate(weAreSuperhuman, 90);
-	    user.rate(weAreSuperhuman, 86);
+	    user.review(testAlbum, "i liked it");
+	    user.rate(testAlbum, 90);
 	    Critic p4k = new Critic("Pitchfork", "www.pitchfork.com");
-	    p4k.rate(weAreSuperhuman, 67);
-	    p4k.review(weAreSuperhuman, "a valiant effort");
+	    p4k.rate(testAlbum, 67);
+	    p4k.review(testAlbum, "a valiant effort");
 	    
 	    User me = new User("isaac's account", "24kofficial", "aasdffaasdff", "trsileneh@gmail.com");
 	    	    
-	    AlbumPanel panel = new AlbumPanel(weAreSuperhuman, me);
+	    AlbumPanel panel = new AlbumPanel(testAlbum, me);
 	    panel.display(frame);
 	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		if(e.getSource() == rateButton) {
-			currentUser.rate(album, Integer.parseInt(rate.getText()));
-			myRating = currentUser.getRatings().get(currentUser.getRatings().size()-1);
-			rated = true;
-			repaint();
-		}
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 }
