@@ -27,7 +27,7 @@ public class MusicReviewApp extends JFrame  {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		User me = new User("isaac", "is", "13","asdfsd");
-		AlbumPanel panel = new AlbumPanel(getArtist("Radiohead").getAlbum("In Rainbows"), me);
+		AlbumPanel panel = new AlbumPanel(getArtist("Tyler, the Creator").getAlbum("Flower Boy"), me);
 		panel.display(this);
 	}
 	
@@ -52,10 +52,11 @@ public class MusicReviewApp extends JFrame  {
 		
 		//load albums
 		try {
+			//albums saved as so: TITLE/ARTIST NAME/RELEASE yyyy-MM-dd/FORMAT/GENRE/LABEL
 			BufferedReader readAlbums = new BufferedReader(new FileReader("src/savedata/albums"));
 			String line = readAlbums.readLine();
 			while(line != null) {
-				String[] info = line.split("/(?!\\s)");
+				String[] info = line.split("/(?!\\s)"); //lookahead to check that / is not part of album info when parsing
 				//find artist
 				Artist artist = getArtist(info[1]);
 				//create album with parsed info
@@ -75,6 +76,7 @@ public class MusicReviewApp extends JFrame  {
 		
 		//load critics
 		try {
+			//critics saved as NAME - URL
 			BufferedReader readCritics = new BufferedReader(new FileReader("src/savedata/critics"));
 			String line = readCritics.readLine();
 			while(line != null) {
