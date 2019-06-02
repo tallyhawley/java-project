@@ -6,26 +6,33 @@ public class Artist {
 	
 	private String name;
 	private ArrayList<Album> albums;
-	private ArrayList<Rating> criticScores;
-	private ArrayList<Rating> userScores;
+	private ArrayList<Rating> criticRatings;
+	private ArrayList<Rating> userRatings;
 	private Score criticScore;
 	private Score userScore;
 	
 	public Artist(String n) {
 		name = n;
 		albums = new ArrayList<Album>();
-		criticScores = new ArrayList<Rating>();
-		userScores = new ArrayList<Rating>();
-		criticScore = new Score(criticScores);
-		userScore = new Score(userScores);
+		criticRatings = new ArrayList<Rating>();
+		userRatings = new ArrayList<Rating>();
+		criticScore = new Score(criticRatings);
+		userScore = new Score(userRatings);
+		
 	}
 	
 	public void add(Album a) {
 		albums.add(a);
-		criticScores.add(new Rating(a.getCriticScore().getScore(),1,new Critic("bot", "www.google.com")));
-		userScores.add(new Rating(a.getUserScore().getScore(), 0, new User("bot", "2812731928371283", "asdhf17281723ysdhf912", "nothing@nothing.com")));
-		criticScore.update(criticScores);
-		userScore.update(userScores);
+	}
+	
+	public void addCriticRating(Rating r) {
+		criticRatings.add(r);
+		criticScore.update(criticRatings);
+	}
+	
+	public void addUserRating(Rating rating) {
+		userRatings.add(rating);
+		userScore.update(userRatings);
 	}
 
 	public String getName() {
@@ -44,5 +51,39 @@ public class Artist {
 	public ArrayList<Album> getAlbums(){
 		return albums;
 	}
+
+	public Score getCriticScore() {
+		return criticScore;
+	}
+
+	public void setCriticScore(Score criticScore) {
+		this.criticScore = criticScore;
+	}
+
+	public Score getUserScore() {
+		return userScore;
+	}
+
+	public void setUserScore(Score userScore) {
+		this.userScore = userScore;
+	}
+
+	public ArrayList<Rating> getCriticRatings() {
+		return criticRatings;
+	}
+
+	public void setCriticRatings(ArrayList<Rating> criticRatings) {
+		this.criticRatings = criticRatings;
+	}
+
+	public ArrayList<Rating> getUserRatings() {
+		return userRatings;
+	}
+
+	public void setUserRatings(ArrayList<Rating> userRatings) {
+		this.userRatings = userRatings;
+	}
+	
+	
 	
 }

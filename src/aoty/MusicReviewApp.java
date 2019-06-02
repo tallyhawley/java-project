@@ -28,8 +28,10 @@ public class MusicReviewApp extends JFrame  {
 		
 		User me = new User("isaac", "is", "13","asdfsd");
 		
-		AlbumPanel panel = new AlbumPanel(getArtist("Tyler, the Creator").getAlbum("Goblin"), me);
+//		AlbumPanel panel = new AlbumPanel(getArtist("Tyler, the Creator").getAlbum("Goblin"), me);
+		ArtistPanel panel = new ArtistPanel(getArtist("Tyler, the Creator"));
 		panel.display(this);
+		
 	}
 	
 	private void loadData() {

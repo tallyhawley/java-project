@@ -52,5 +52,7 @@ public class Rating implements Comparable<Rating> {
 		this.source = source;
 	}
 	
-	
+	public String toString() {
+		return "" + rating;
+	}
 }

@@ -55,6 +55,7 @@ public class Album {
 	
 	public void addCriticRating(Rating rating) {
 		criticRatings.add(rating);
+		artist.addCriticRating(rating);
 		criticScore.update(criticRatings);
 	}
 	
@@ -64,6 +65,7 @@ public class Album {
 	
 	public void addUserRating(Rating rating) {
 		userRatings.add(rating);
+		artist.addUserRating(rating);
 		userScore.update(userRatings);
 	}
 	
