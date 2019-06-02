@@ -27,7 +27,8 @@ public class MusicReviewApp extends JFrame  {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		User me = new User("isaac", "is", "13","asdfsd");
-		AlbumPanel panel = new AlbumPanel(getArtist("Tyler, the Creator").getAlbum("Flower Boy"), me);
+		
+		AlbumPanel panel = new AlbumPanel(getArtist("Tyler, the Creator").getAlbum("Goblin"), me);
 		panel.display(this);
 	}
 	
@@ -95,6 +96,28 @@ public class MusicReviewApp extends JFrame  {
 		}
 		
 		//load critic reviews
+		try {
+			//CRITIC///ALBUM///ARTIST///RATING///REVIEW LINK
+			BufferedReader readCriticReviews = new BufferedReader(new FileReader("src/savedata/criticreviews"));
+			String line = readCriticReviews.readLine();
+			while(line != null) {
+				String[] info = line.split("/(?!\\\\s)");
+				Critic critic = getCritic(info[0]);
+				Artist artist = getArtist(info[2]);
+				Album album = artist.getAlbum(info[1]);
+				critic.rate(album, Integer.parseInt(info[3]));
+				critic.review(album, info[4]);
+				line = readCriticReviews.readLine();
+			}
+			readCriticReviews.close();
+		}
+		catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		//load users
 		

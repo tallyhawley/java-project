@@ -41,4 +41,8 @@ public class Artist {
 		return null;
 	}
 	
+	public ArrayList<Album> getAlbums(){
+		return albums;
+	}
+	
 }

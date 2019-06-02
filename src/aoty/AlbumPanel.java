@@ -1,6 +1,7 @@
 package aoty;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -8,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -32,6 +34,13 @@ public class AlbumPanel extends JPanel {
 	private Rating myRating;
 	private Review myReview;
 	
+	private int start = 655;
+	
+	private int start2;
+	
+	private int j;
+	
+	
 	public AlbumPanel(Album a, User u) {
 		album = a;
 		currentUser = u;
@@ -49,9 +58,12 @@ public class AlbumPanel extends JPanel {
 				myReview = r;
 			}
 		}
-		length = 1000;
 		
 		this.setLayout(null);
+		
+		start2 = 655 + 65 + album.getCriticRatings().size()*45;
+		
+		length = start2 + album.getUserReviews().size()*45 + 50;
 		
 		//ADD ALL COMPONENTS
 		
@@ -78,6 +90,9 @@ public class AlbumPanel extends JPanel {
 		review.setBounds(64,512,476,73);
 		review.setLineWrap(true);
 		review.setWrapStyleWord(true);
+		if(reviewed) {
+			review.setText(myReview.getReview());
+		}
 		this.add(review);
 		
 		//review button
@@ -91,11 +106,69 @@ public class AlbumPanel extends JPanel {
 					myReview = currentUser.getReviews().get(currentUser.getReviews().size()-1);
 					reviewed = true;
 					repaint();
+					length = start2 + album.getUserReviews().size()*45 + 50;
+					setPreferredSize(new Dimension(600,length));
+					//add new review button
+					JButton user = new JButton(myReview.getSource().getName());
+					user.setBounds(105, start2-13+45*j,myReview.getSource().getName().length()*7 + 20, 15);
+					user.addActionListener(new ActionListener() {
+
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+					});
+					add(user);
+					j++;
 				}
 			}
 			
 		});
 		this.add(revButton);
+		
+		int i = 1;
+		
+		//add critic reviews
+		for(Rating r : album.getCriticRatings()) {
+			JButton critic = new JButton(r.getSource().getName());
+			critic.setBounds(105,start-13+45*i, r.getSource().getName().length()*7+20, 15);
+			critic.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						  Desktop desktop = java.awt.Desktop.getDesktop();
+						  desktop.browse(((Critic) r.getSource()).getWebsite());
+						} catch (Exception ex) {
+						  ex.printStackTrace();
+						}
+				}
+				
+			});
+			this.add(critic);
+			i++;
+		}
+		
+		j = 1;
+		
+		for(Review r : album.getUserReviews()) {
+			JButton user = new JButton(r.getSource().getName());
+			user.setBounds(105, start2-13+45*j,r.getSource().getName().length()*7 + 20, 15);
+			user.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+			});
+			this.add(user);
+			j++;
+		}
+		
 	}
 	
 	public void paintComponent(Graphics window) {
@@ -187,23 +260,48 @@ public class AlbumPanel extends JPanel {
 		
 		//display critic reviews
 		window.setColor(new Color(230,230,230));
-		window.fillRect(50, 645, 500, 40 + album.getCriticReviews().size()*100);
+		window.fillRect(50, 645, 500, 40 + album.getCriticRatings().size()*45);
 		window.setColor(Color.black);
 		window.setFont(new Font("default", Font.BOLD, 13));
-		window.drawString("CRITIC REVIEWS", 65, 670);
+		if(album.getCriticRatings().size() > 0) window.drawString("CRITIC REVIEWS", 65, 670);
+		else window.drawString("NO CRITIC REVIEWS", 65, 670);
 		
-		if(album.getCriticReviews().size() == 0) {
-			window.setColor(new Color(230,230,230));
-			window.fillRect(50, 685, 500, 40);
-			window.setColor(Color.black);
-			window.setFont(new Font("default", Font.PLAIN, 13));
-			window.drawString("No Critic Reviews!", 250, 700);
+		int i = 1;
+		
+		for(Rating r : album.getCriticRatings()) {
+			Review rev = getReview(r.getSource(),album.getCriticReviews());	
+			window.setFont(new Font("default", Font.BOLD, 15));
+			window.drawString("" + r.getRating(), 65, start+45*i);
+			window.setFont(new Font("default", Font.PLAIN,12));
+			if(rev != null) window.drawString(rev.getReview(),75,  start + 18 + 45*i);
+			else window.drawString("[no review]", 75, start + 18 + 45*i);
+			i++;
 		}
 		
+		//display user reviews
+		window.setColor(new Color(230,230,230));
+		window.fillRect(50, 710 + album.getCriticRatings().size()*45, 500, 40 + album.getUserReviews().size()*45);
+		window.setColor(Color.black);
+		window.setFont(new Font("default", Font.BOLD, 13));
+		if(album.getUserReviews().size() > 0) window.drawString("USER REVIEWS", 65, 735 + album.getCriticRatings().size()*45);
+		else window.drawString("NO USER REVIEWS", 65, 735 + album.getCriticRatings().size()*45);
+		
+		int j = 1;
+		
+		for(Review r : album.getUserReviews()) {
+			Rating ra = getRating(r.getSource(),album.getUserRatings());
+			window.setFont(new Font("default", Font.BOLD, 13));
+			if(ra != null) window.drawString("" + ra.getRating(), 65, start2 + 45*j);
+			else window.drawString("NR", 65, start2 + 45*j);
+			window.setFont(new Font("default", Font.PLAIN, 12));
+			window.drawString(r.getReview(), 75, start2 + 18 + 45*j);
+			j++;
+		}
 	}
 	
 	public void display(JFrame frame) {
-		this.setPreferredSize(new Dimension(600,length));
+		setPreferredSize(new Dimension(600,length));
+		
 		
 		//make the panel scrollable
 		JScrollPane scrollPane = new JScrollPane(this);
@@ -222,24 +320,52 @@ public class AlbumPanel extends JPanel {
 	    frame.setVisible(true);
 	}
 	
-	public static void main(String[] args) {
-		JFrame frame = new JFrame("TEST");
-	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    
-	    Artist testArtist = new Artist("Sufjan Stevens");
-	    Album testAlbum = new Album("Greetings From Michigan: The Great Lakes State", testArtist, "2003-07-01",1,"Indie Folk","Asthmatic Kitty");
-	    User user = new User("test user", "345678", "345678", "345678");
-	    user.review(testAlbum, "i liked it");
-	    user.rate(testAlbum, 90);
-	    Critic p4k = new Critic("Pitchfork", "www.pitchfork.com");
-	    p4k.rate(testAlbum, 67);
-	    p4k.review(testAlbum, "a valiant effort");
-	    
-	    User me = new User("isaac's account", "24kofficial", "aasdffaasdff", "trsileneh@gmail.com");
-	    	    
-	    AlbumPanel panel = new AlbumPanel(testAlbum, me);
-	    panel.display(frame);
+//	public static void main(String[] args) {
+//		JFrame frame = new JFrame("TEST");
+//	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//	    
+//	    Artist testArtist = new Artist("Tyler, the Creator");
+//	    Album testAlbum = new Album("IGOR", testArtist, "2019-05-17",1,"Neo-Soul","Columbia");
+//	    User user = new User("test user", "345678", "345678", "345678");
+//	    user.review(testAlbum, "i liked it");
+//	    user.rate(testAlbum, 90);
+//	    Critic p4k = new Critic("Pitchfork", "https://pitchfork.com");
+//	    p4k.rate(testAlbum, 67);
+//	    p4k.review(testAlbum, "a valiant effort");
+//	    Critic nme = new Critic("NME", "https://www.nme.com");
+//	    nme.rate(testAlbum, 95);
+//	    nme.review(testAlbum, "good!!!");
+//	    Critic uh = new Critic("idk", "https://www.google.com");
+//	    uh.rate(testAlbum, 76);
+//	    uh.review(testAlbum, "quality content!");
+//	    Critic yeah = new Critic("ummmm", "https://www.google.com");
+//	    yeah.rate(testAlbum, 90);
+//	    yeah.review(testAlbum, "a quality record from an extraordinary musician");
+//	    
+//	    User me = new User("isaac's account", "24kofficial", "aasdffaasdff", "trsileneh@gmail.com");
+//	    
+//	    //me.review(testAlbum, "a very good album, i really liked it :)");
+//	    	    
+//	    AlbumPanel panel = new AlbumPanel(testAlbum, me);
+//	    panel.display(frame);
+//	}
+	
+	public Review getReview(Reviewer source, ArrayList<Review> reviews) {
+		for(Review r : reviews) {
+			if(r.getSource().equals(source)) {
+				return r;
+			}
+		}
+		return null;
 	}
 	
+	public Rating getRating(Reviewer source, ArrayList<Rating> ratings) {
+		for(Rating r : ratings) {
+			if(r.getSource().equals(source)){
+				return r;
+			}
+		}
+		return null;
+	}
 
 }
