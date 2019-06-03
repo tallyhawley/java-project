@@ -50,7 +50,7 @@ public class UserPanel extends JPanel {
 		
 		//cut down to top 9
 		if(ratings.size() > 9) {
-			ratings.subList(9, ratings.size()-1).clear();
+			ratings.subList(8, ratings.size()-1).clear();
 		}
 		
 		//find the original albums again
@@ -76,7 +76,7 @@ public class UserPanel extends JPanel {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					AlbumPanel newPanel = new AlbumPanel(al,user,frame,allArtists);
+					AlbumPanel newPanel = new AlbumPanel(al,currentUser,frame,allArtists);
 				}
 				
 			});
