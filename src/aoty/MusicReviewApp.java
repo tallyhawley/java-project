@@ -34,10 +34,7 @@ public class MusicReviewApp extends JFrame  {
 		    public void run() {
 		        saveData();
 		    }
-		});
-		
-		me = new User("3racha's manager", "24kofficial", "password", "trsileneh@gmail.com");
-		
+		});		
 		IntroPanel panel = new IntroPanel(users,this,artists);
 		
 		
