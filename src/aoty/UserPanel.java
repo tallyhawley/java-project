@@ -132,10 +132,10 @@ public class UserPanel extends JPanel {
 //			window.drawString(df.format(a.getReleaseDate()),112 + 175*c, 160 + height*r);
 			//window.drawImage(a.getCover(), 50 + 175*c, 285 + height*r, 150,150,this);
 			window.setFont(new Font("default", Font.BOLD, 12));
-			if(a.getName().length() < 25) window.drawString(a.getName(), 50 + 175*c, 450+height*r);
-			else window.drawString(a.getName().substring(0,22) + "...", 50 + 175*c, 450+height*r);
+			if(a.getName().length() < 25) window.drawString(a.getName(), 50 + 175*c, 330+height*r);
+			else window.drawString(a.getName().substring(0,22) + "...", 50 + 175*c, 330+height*r);
 			window.setFont(new Font("default", Font.PLAIN, 12));
-			window.drawString(a.getArtist().getName(), 50 + 175 * c, 340 + height * r);
+			window.drawString(a.getArtist().getName(), 50 + 175 * c, 345 + height * r);
 			window.setColor(Color.BLACK);
 			window.setFont(new Font("default", Font.BOLD, 14));
 			window.drawString(ratings.get(i).toString(), 50 + 175*c, 365 + height * r);
