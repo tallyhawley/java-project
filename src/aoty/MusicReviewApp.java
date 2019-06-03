@@ -38,7 +38,8 @@ public class MusicReviewApp extends JFrame  {
 		
 		me = new User("3racha's manager", "24kofficial", "password", "trsileneh@gmail.com");
 		
-		HomePanel panel = new HomePanel(artists,me,this);
+		IntroPanel panel = new IntroPanel(users,this,artists);
+		
 		
 	}
 	
