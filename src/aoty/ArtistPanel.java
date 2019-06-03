@@ -4,10 +4,17 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -18,14 +25,69 @@ public class ArtistPanel extends JPanel {
 	private Artist artist;
 	private ArrayList<Album> albums;
 	private ArrayList<JButton> albumButtons;
+	private User user;
 	
 	private int length;
 	
-	public ArtistPanel(Artist a) {
+	private int height = 265;
+	
+	public ArtistPanel(Artist a, User u, JFrame frame, ArrayList<Artist> allArtists) {
+		this.setLayout(null);
 		artist = a;
+		user = u;
 		albums = artist.getAlbums();
 		
-		length = 1000;
+		Collections.sort(albums, new Comparator<Album>() {
+
+			@Override
+			public int compare(Album o1, Album o2) {
+				// TODO Auto-generated method stub
+				return o2.getReleaseDate().compareTo(o1.getReleaseDate());
+			}
+			
+		});
+		
+		length = 280 + height * (1+((albums.size()-1)/3));
+		
+		int r = 0;
+		int c = 0;
+		for(Album al : albums) {
+			if(c >= 3) {
+				r++;
+				c = 0;
+			}
+			Image resized = al.getCover().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+			ImageIcon icon = new ImageIcon(resized);
+			
+			JButton button = new JButton(icon);
+			button.setBounds(50+175*c,285+height*r,150,150);
+			button.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					AlbumPanel newPanel = new AlbumPanel(al,user,frame,allArtists);
+				}
+				
+			});
+			this.add(button);
+			c++;
+		}
+		
+		//add home button
+		JButton home = new JButton("HOME");
+		home.setBounds(500,30,50,20);
+		home.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				HomePanel goHome = new HomePanel(allArtists,user,frame);
+			}
+
+		});
+		this.add(home);
+		
+		this.display(frame);
 	}
 	
 	public void paintComponent(Graphics window) {
@@ -63,16 +125,44 @@ public class ArtistPanel extends JPanel {
 		window.drawString("ALBUMS", 50, 245);
 		
 		int r = 0;
-		int c = 1;
+		int c = 0;
 		
 		for(Album a : albums) {
-			if(c > 3) {
+			if(c >= 3) {
 				r++;
-				c = 1;
+				c = 0;
 			}
+			window.setColor(Color.BLACK);
 			window.setFont(new Font("default", Font.PLAIN, 10));
 			DateFormat df = new SimpleDateFormat("yyyy");
-			window.drawString(df.format(a.getReleaseDate()), 50 + 145*c, 270 + 200*r);
+			window.drawString(df.format(a.getReleaseDate()),112 + 175*c, 270 + height*r);
+			//window.drawImage(a.getCover(), 50 + 175*c, 285 + height*r, 150,150,this);
+			window.setFont(new Font("default", Font.PLAIN, 12));
+			if(a.getName().length() < 25) window.drawString(a.getName(), 50 + 175*c, 450+height*r);
+			else window.drawString(a.getName().substring(0,22) + "...", 50 + 175*c, 450+height*r);
+			window.setColor(Color.GRAY);
+			switch(a.getType()) {
+			case 0:
+				window.drawString("EP", 50 + 175 * c, 465 + height * r);
+				break;
+			case 1:
+				window.drawString("LP", 50 + 175 * c, 465 + height * r);
+				break;
+			case 2:
+				window.drawString("Single", 50 + 175 * c, 465 + height * r);
+				break;
+			case 3:
+				window.drawString("Mixtape", 50 + 175 * c, 465 + height * r);
+				break;
+			}
+			window.setColor(Color.BLACK);
+			window.setFont(new Font("default", Font.BOLD, 14));
+			window.drawString(a.getCriticScore().toString(), 50 + 175*c, 490 + height * r);
+			window.drawString(a.getUserScore().toString(), 50 + 175*c, 515 + height * r);
+			window.setColor(Color.GRAY);
+			window.setFont(new Font("default", Font.PLAIN, 10));
+			window.drawString("critic score (" + a.getCriticRatings().size() + ")", 80 + 175*c, 488+height*r);
+			window.drawString("user score (" + a.getUserRatings().size() + ")", 80 + 175*c, 513+height*r);
 			c++;
 		}
 	}

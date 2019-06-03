@@ -11,6 +11,7 @@ public class User extends Reviewer {
 	private String email;
 	private ArrayList<Rating> ratings;
 	private ArrayList<Review> reviews;
+	private ArrayList<Album> rated;
 	private String location;
 	private String bio;
 	private URI website;
@@ -23,11 +24,14 @@ public class User extends Reviewer {
 		
 		ratings = new ArrayList<Rating>();
 		reviews = new ArrayList<Review>();
+		
+		rated = new ArrayList<Album>();
 	}
 
 	@Override
 	public void rate(Album album, int rating) {
 		Rating rate = new Rating(rating, 0, this);
+		rated.add(album);
 		album.addUserRating(rate);
 		ratings.add(rate);
 		
@@ -109,7 +113,13 @@ public class User extends Reviewer {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+	public ArrayList<Album> getRated() {
+		return rated;
+	}
+
+	public void setRated(ArrayList<Album> rated) {
+		this.rated = rated;
+	}
 
 }

@@ -41,7 +41,7 @@ public class Rating implements Comparable<Rating> {
 
 	@Override
 	public int compareTo(Rating r) {
-		return this.timestamp.compareTo(r.getTimestamp());
+		return ((Integer)this.rating).compareTo((Integer)r.getRating());
 	}
 
 	public Reviewer getSource() {

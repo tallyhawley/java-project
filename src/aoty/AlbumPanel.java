@@ -33,6 +33,7 @@ public class AlbumPanel extends JPanel {
 	private int length;
 	private Rating myRating;
 	private Review myReview;
+	private JButton artist;
 	
 	private int start = 655;
 	
@@ -41,7 +42,7 @@ public class AlbumPanel extends JPanel {
 	private int j;
 	
 	
-	public AlbumPanel(Album a, User u) {
+	public AlbumPanel(Album a, User u, JFrame frame, ArrayList<Artist> allArtists) {
 		album = a;
 		currentUser = u;
 		rated = false;
@@ -66,6 +67,23 @@ public class AlbumPanel extends JPanel {
 		length = start2 + album.getUserReviews().size()*45 + 50;
 		
 		//ADD ALL COMPONENTS
+		
+		//to artist page
+		artist = new JButton();
+		artist.setBounds(50,20,20+album.getArtist().getName().length()*7,15);
+		artist.setOpaque(false);
+		artist.setBorderPainted(false);
+		artist.setContentAreaFilled(false);
+		artist.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				ArtistPanel panel = new ArtistPanel(album.getArtist(),currentUser,frame,allArtists);
+			}
+			
+		});
+		this.add(artist);
 		
 		//rating box
 		rate.setBounds(62, 492,40,15);
@@ -115,8 +133,7 @@ public class AlbumPanel extends JPanel {
 
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							// TODO Auto-generated method stub
-							
+							UserPanel panel = new UserPanel((User)myReview.getSource(),currentUser,frame,allArtists);
 						}
 						
 					});
@@ -160,7 +177,7 @@ public class AlbumPanel extends JPanel {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
+					UserPanel panel = new UserPanel((User)r.getSource(),currentUser,frame,allArtists);
 					
 				}
 				
@@ -169,6 +186,21 @@ public class AlbumPanel extends JPanel {
 			j++;
 		}
 		
+		//add home button
+		JButton home = new JButton("HOME");
+		home.setBounds(500,30,50,20);
+		home.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				HomePanel goHome = new HomePanel(allArtists,currentUser,frame);
+			}
+
+		});
+		this.add(home);
+		
+		this.display(frame);
 	}
 	
 	public void paintComponent(Graphics window) {
